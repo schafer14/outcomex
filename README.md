@@ -122,23 +122,14 @@ The design isn't great. That would probably be low hanging fruit for a designer 
 
 ### Back-end 
 
-- Default HTTP router
-- All configuration passed in by env or cmd line args
-- Use of internal folders
-- Only current weather
-- Closed world assumption for available cities
-- No API docs
-- Single API
-- Cors conf
-- Health Check endpoint
-- Default HTTP Router (anything can use it)
-- Graceful shutdown 
-- No support for SSL
-- In the handleWeather function most of the boiler plate would be a separate function, but since I'm only doing it once that abstraction doesn't make sense.
-- Middlewares (in particular logging)
+I used the default `net/http` router because one of the requirements was to use as few dependencies as possible and I have always wanted to mess around with that library. In production I would use Gorilla, Chi or similar.
+
+I make heavy use of internal folders, and similarly in packages am hyper alert about what gets exported. I keep my API service as small as possible to make the API as easy to grok as possible, and to make sure as much detail is an implmentation detail as possible. 
+
+There are no docs for this API. With more time I would have added some Swagger docs. In the same line of thought there are also other non-functional requirements which are absent including CORS, health checking, a version endpoing, graceful shutdowns, and support for SSL. These things are important for production systems, but not for demonstrations. 
+
+Similar to the front-end there are some abstractions that would surely happen as the application grew, but with such a small feature surface are unnecessary. IN particular adding middleware and a lot of the boilerplate in `handleWeather` that deals with handling requests and responses.
 
 ### Odds & Ends 
 
-- Single commit because no issue number
-- Git branching (master/tag, gitflow)
-- CI/CD
+Just some odds and ends that would be essential in a production system: the proper git commits would be great, I opted out of this because I didn't have any issue numbers to use as commits. Also separate git branches: in a team using gitflow or by myself using master/tag. Lastly having CI/CD to automatically run tests and deploy the system as I added new features would be essential. In a vacuum I would use CircleCI to handle most of this, but most teams already have some solution for this type of stuff. 
