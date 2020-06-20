@@ -36,6 +36,8 @@ Note: City.js is currently doing two things. It is responsible for fetching data
 
 ## Dependencies
 
+### Docker
+
 ### https://openweathermap.org/api
 
 This is the API used for fetching the weather forecasts. An API key is required to run either the tests or the server for this application.
