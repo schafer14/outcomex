@@ -20,7 +20,6 @@ You can then view the application in your browser at localhost:3000.
 
 For testing make sure you have a openweathermap api key available as an environment variable as `$API_Key` then run `go test ./...`. 
 
-### Docs
 
 ## Application Structure
 
