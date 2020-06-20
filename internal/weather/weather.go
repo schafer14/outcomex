@@ -42,13 +42,18 @@ func (wa *weatherAPI) FetchWeather(ctx context.Context, loc Location) ([]Weather
 
 	res, err := wa.client.Do(req)
 	if err != nil {
-		return []WeatherItem{}, errors.Wrap(err, "fetching response")
+		return []WeatherItem{}, errors.Wrap(err, "fetching weather")
 	}
 
 	decoder := json.NewDecoder(res.Body)
 	var weatherResult weather
 	if err := decoder.Decode(&weatherResult); err != nil {
 		return []WeatherItem{}, errors.Wrap(err, "parsing response")
+	}
+
+	if weatherResult.Code >= 400 {
+		err := fmt.Errorf("openweathermap responded with a %v and the message %q", weatherResult.Code, weatherResult.Message)
+		return []WeatherItem{}, errors.Wrap(err, "fetching weather")
 	}
 
 	return parseWeather(weatherResult), nil

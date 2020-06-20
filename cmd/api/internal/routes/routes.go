@@ -2,7 +2,7 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"outecomex/internal/weather"
 	"strings"
@@ -66,7 +66,7 @@ func (h *Handler) handleWeather(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.Wa.FetchWeather(r.Context(), location)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Could not fetch weather"))
 		return
@@ -75,7 +75,7 @@ func (h *Handler) handleWeather(w http.ResponseWriter, r *http.Request) {
 	// Convert the response value to JSON.
 	jsonData, err := json.Marshal(res)
 	if err != nil {
-		fmt.Println(errors.Wrap(err, "parsing json data"))
+		log.Println(errors.Wrap(err, "parsing json data"))
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Could not fetch weather"))
 		return
@@ -83,7 +83,7 @@ func (h *Handler) handleWeather(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	if _, err := w.Write(jsonData); err != nil {
-		fmt.Println(errors.Wrap(err, "sending response"))
+		log.Println(errors.Wrap(err, "sending response"))
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Could not fetch weather"))
 	}

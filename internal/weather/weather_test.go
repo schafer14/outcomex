@@ -1,7 +1,6 @@
 package weather_test
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"outecomex/internal/weather"
@@ -23,9 +22,21 @@ func TestFetchWeather(t *testing.T) {
 	client := weather.New(apiKey, http.DefaultClient)
 
 	// Act
-	weather, err := client.FetchWeather(ctx, weather.Location{Lon: 151.209900, Lat: -33.865143})
+	_, err := client.FetchWeather(ctx, weather.Location{Lon: 151.209900, Lat: -33.865143})
 
 	// Assert
 	require.Nil(t, err)
-	fmt.Println(weather)
+}
+
+func TestFetchWeatherWithInvalidCredentials(t *testing.T) {
+
+	// Arrange
+	ctx := context.Background()
+	client := weather.New("123", http.DefaultClient)
+
+	// Act
+	_, err := client.FetchWeather(ctx, weather.Location{Lon: 151.209900, Lat: -33.865143})
+
+	// Assert
+	require.Error(t, err)
 }
