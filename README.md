@@ -1,22 +1,44 @@
 # Outcomex Tech Challenge
 
+![Demo Image](./example.png)
+
 ## Building
 
-For both testing and serving the back end requires a API Key to be passed in. For testing the 
+### Using Docker
 
-### Development
+The only important thing is to provide your openweathermap api key as a flag (or environment variable) to the program. You may also specify a custome host for the API using `--api-host=0.0.0.0:12345`
+
+```
+docker build -t outcomex .
+docker run -it -p 3000:3000 outcomex --api-key="123"
+```
+
+You can then view the application in your browser at localhost:3000.
 
 ### Testing
 
-### Production
+For testing make sure you have a openweathermap api key available as an environment variable as `$API_Key` then run `go test ./...`. 
 
 ### Docs
 
 ## Application Structure
 
+A good entrypoint to get started is with Docker, however you can also use go modd to run the app in development mode and the application will restart as you make changes. 
+
+The internal directory is for go source that could become it's own go module, the code in this folder is completely domain agnostic and could be turned into it's own module if required. 
+
+The cmd directory contains a set of commands to facilitate using this application. Currently the only command is api which runs the server; however, if there were migrations or an admin tool in this project it would also live in this directory. Code in this directory is specific to this application and should not be copied or used in other applications.
+
+The front-end directory contains the source code required to run a browser application. It is mostly boiler plate create react app code. The three main files are in src/ and are `App.js` which houses the main application structure. `City.js` which contains view logic for displaying a city card, and `ForecastImg.js` which contains logic for creating a SVG (image) of a forecast.
+
+Note: City.js is currently doing two things. It is responsible for fetching data from the server _and_ it is responsible for displaying that data. This is not a great design and should be seprated into two compoments for the two tasks. 
+
 ## Dependencies
 
-- https://openweathermap.org/api
+### https://openweathermap.org/api
+
+This is the API used for fetching the weather forecasts. An API key is required to run either the tests or the server for this application.
+
 - Cli arg parser <3
 - Testify
 - Material UI
@@ -88,3 +110,4 @@ For both testing and serving the back end requires a API Key to be passed in. Fo
 ### Git 
 
 - Single commit because no issue number
+- Git branching (master/tag, gitflow)
