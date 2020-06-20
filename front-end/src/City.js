@@ -13,12 +13,24 @@ import {chain, round, map, capitalize} from 'lodash';
 import Forecast from './ForecastImg';
 import * as axios from 'axios';
 
-// Would have automatic reload if I had more time.
-// I would add proper cachign to make sure I'm not constantly reloading data
+// City is a component that is responsible for displaying the weather of a given city. 
+// As the application grows this component could also take responsiblity for caching 
+// the data and minimize the number of requests made. Another feature that would live
+// in this component is the ability to to automatic refreshing after a given amount of time. 
+//
+// The problem with this component right now is that it is both fetching data from the api _and_
+// displaying that data. These two responsiblities should be separated into their own components.
+//
+// Another issue is there is a lot of boilerplate code (such as displaying problems and the loading state).
+// Since this code is only used once in the application I did not abstract it to a separate component,
+// but as soon as another component used the API the loading and problem if conditionals would be moved
+// out of this component.
 export default function City({name, isShowing}) {
+
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState();
   const [problem, setProblem] = useState();
+  const pointsInWeatherImage = 8;
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -66,7 +78,7 @@ export default function City({name, isShowing}) {
   }
 
   const current = data[0];
-  const forecast = chain(data).map('temp').take(8).value();
+  const forecast = chain(data).map('temp').take(pointsInWeatherImage).value();
 
   return (
     <Card style={{margin: 20}}>

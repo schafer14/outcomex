@@ -16,6 +16,8 @@ import (
 var build = "develop"
 var version = "v0.0.1"
 
+// main is just a pass through function for run. I do this because
+// main is not allowed to have the type signature that I want it to.
 func main() {
 	if err := run(); err != nil {
 		fmt.Println("error :", err)
@@ -23,6 +25,7 @@ func main() {
 	}
 }
 
+// run is like main except it returns an error.
 func run() error {
 
 	// =============================================== //
@@ -72,7 +75,7 @@ func run() error {
 
 	server := &http.Server{
 		Addr:    cfg.APIHost,
-		Handler: &routes.Handler{weatherAPI},
+		Handler: &routes.Handler{Wa: weatherAPI},
 	}
 
 	return server.ListenAndServe()

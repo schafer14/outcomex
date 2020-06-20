@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/pkg/errors"
 )
@@ -30,17 +29,9 @@ func New(apiKey string, client *http.Client) WeatherAPI {
 // FetchWeather returns the weather for a given city.
 func (wa *weatherAPI) FetchWeather(ctx context.Context, loc Location) ([]WeatherItem, error) {
 
-	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
-	defer cancel()
-
 	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5/onecall?lon=%v&lat=%v&appid=%s", loc.Lon, loc.Lat, wa.apiKey)
 
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return []WeatherItem{}, errors.Wrap(err, "building request")
-	}
-
-	res, err := wa.client.Do(req)
+	res, err := wa.client.Get(url)
 	if err != nil {
 		return []WeatherItem{}, errors.Wrap(err, "fetching weather")
 	}

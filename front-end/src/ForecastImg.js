@@ -2,6 +2,9 @@ import React from 'react';
 
 import {map} from 'lodash';
 
+// This component is responsible for displaying an image given a list of temperature
+// points. There are a lot of features that should be added to this compoment which are
+// examined in the README.md file.
 export default function Forecast({points}) {
   return (
     <svg

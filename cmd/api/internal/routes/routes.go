@@ -21,8 +21,8 @@ type Handler struct {
 // With a larger app it would be worth structing this out a little bit better and
 // using a better router such as Gorilla, Chi or any of the other billion routers.
 //
-// The router routes between four alternatives facilitating not only the weather api but
-// the other three routes facilitate serving the SPA.
+// The router routes between the go api under the /weather endpoint and if not that
+// delegates to the react app. This means the front-end is responsible for 404's and what not.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Break the url into parts
@@ -40,14 +40,25 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // In a reall application it would probably be better to put this into a configuration file
 // like json to make it more human read/editable.
 var cityMap = map[string]weather.Location{
-	"sydney":    weather.Location{Lon: 151.209900, Lat: -33.865143},
-	"melbourne": weather.Location{Lon: 144.96332, Lat: -37.814},
-	"adelaide":  weather.Location{Lon: 138.59863, Lat: -34.92866},
+	"sydney":    {Lon: 151.209900, Lat: -33.865143},
+	"melbourne": {Lon: 144.96332, Lat: -37.814},
+	"adelaide":  {Lon: 138.59863, Lat: -34.92866},
 }
 
 // handleWeather responds to a weather API request.
+//
+// This function is particularly verbose because it is doing a lot of what would normally be
+// boilerplate code. Since there is only one api endpoint it does not make sense to abstract
+// this boilerplate code at this point.
+//
+// The boilerplate that would be abstracted is
+// - Handling a request url
+// - Converting a response to JSON
+// - Writing the response to the ResponseWriter
 func (h *Handler) handleWeather(w http.ResponseWriter, r *http.Request) {
 
+	// We expect the route to have the shape of "/weather/sydney"
+	// so there should be three parts separated by '/'
 	parts := strings.Split(r.URL.Path, "/")
 	if len(parts) < 3 {
 
@@ -72,7 +83,6 @@ func (h *Handler) handleWeather(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Convert the response value to JSON.
 	jsonData, err := json.Marshal(res)
 	if err != nil {
 		log.Println(errors.Wrap(err, "parsing json data"))
